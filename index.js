@@ -7,7 +7,7 @@ const recipeRoutes = require("./routes/recipe");
 const ratingRoutes = require("./routes/rating");
 const favouritesRoutes = require("./routes/favourites");
 const userRoutes = require("./routes/users"); // Updated to match the file name
-const calorieTrackingRoutes = require("./routes/calorietracking"); // Import calorie tracking routes
+const calorieTrackingRoutes = require("./routes/calorieTracking"); // Import calorie tracking routes
 const path = require("path");
 
 const app = express();
@@ -28,13 +28,9 @@ app.use("/api/calories", calorieTrackingRoutes); // Mount the route
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected Successfully"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
-
 
 // Default route
 app.get("/", (req, res) => {
