@@ -31,7 +31,7 @@ router.put("/calorie-goal", authCheck, async (req, res) => {
   }
 });
 
-// Add a new food entry
+// Add a new food entry//
 router.post("/food-log", authCheck, async (req, res) => {
   try {
     const { food, calories, meal, time } = req.body;
