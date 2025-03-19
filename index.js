@@ -6,8 +6,8 @@ const authRoutes = require("./routes/auth");
 const recipeRoutes = require("./routes/recipe");
 const ratingRoutes = require("./routes/rating");
 const favouritesRoutes = require("./routes/favourites");
-const userRoutes = require("./routes/users"); // Updated to match the file name
-const calorieTrackingRoutes = require("./routes/calorieTracking"); // Import calorie tracking routes
+const userRoutes = require("./routes/users"); 
+const calorietrackingRoutes = require("./routes/calorietracking");
 const path = require("path");
 
 const app = express();
@@ -21,7 +21,7 @@ app.use("/api/recipe", recipeRoutes);
 app.use("/api/rating", ratingRoutes);
 app.use("/api/favourites", favouritesRoutes);
 app.use("/api/users", userRoutes); // Changed from /api/user to /api/users
-app.use("/api/calories", calorieTrackingRoutes); // Mount the route
+app.use("/api/calories", calorietrackingRoutes); // Mount the route
 
 
 
