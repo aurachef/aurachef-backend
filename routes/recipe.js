@@ -114,7 +114,7 @@ const calculateMatchPercentage = (searchIngredients, recipeIngredients) => {
 };
 
 // Create a new recipe
-router.post("/create", authCheck, upload.single("image"), async (req, res) => {
+router.post("/create", authCheck, async (req, res) => {
   try {
     const {
       title,
@@ -125,9 +125,20 @@ router.post("/create", authCheck, upload.single("image"), async (req, res) => {
       servings,
       calories,
       caloriesPerServing = 2,
+      image,
     } = req.body;
 
-    const image = req.file ? req.file.path : null;
+    // Validate required fields
+    if (!title || !cookTime || !servings) {
+      return res.status(400).json({ 
+        message: "Missing required fields", 
+        required: {
+          title: !title ? "Title is required" : undefined,
+          cookTime: !cookTime ? "Cook time is required" : undefined,
+          servings: !servings ? "Servings is required" : undefined
+        }
+      });
+    }
 
     // Parse ingredients using the new function
     const parsedIngredients = parseIngredients(ingredients);

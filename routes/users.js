@@ -60,7 +60,7 @@ router.get("/profile", authCheck, async (req, res) => {
     
     // Ensure avatar URL is properly formatted
     if (user.avatar) {
-      user.avatar = `https://aurachef-backend.vercel.app/${user.avatar.replace(/^\//, '')}`;
+      user.avatar = `${user.avatar.replace(/^\//, '')}`;
     }
     
     res.json(user);
@@ -71,28 +71,14 @@ router.get("/profile", authCheck, async (req, res) => {
 });
 
 // Update user profile
-router.put("/profile", authCheck, upload.single("avatar"), async (req, res) => {
+router.put("/profile", authCheck, async (req, res) => {
   try {
-    const { username, bio } = req.body;
+    const { username, bio, avatar } = req.body;
     const updateData = {
       username,
-      bio: bio || ""
+      bio: bio || "",
+      avatar: avatar || ""  // Use the avatar URL directly from request body
     };
-
-    // If a file was uploaded, add its path to updateData
-    if (req.file) {
-      updateData.avatar = `images/profile/${req.file.filename}`;
-      
-      // Delete old avatar file if it exists
-      const currentUser = await User.findById(req.user._id);
-      if (currentUser.avatar) {
-        const oldAvatarPath = currentUser.avatar.replace('https://aurachef-backend.vercel.app/', '');
-        const fullPath = path.join(process.cwd(), oldAvatarPath);
-        if (fs.existsSync(fullPath)) {
-          fs.unlinkSync(fullPath);
-        }
-      }
-    }
 
     // Check if username is already taken (if username is being changed)
     if (username !== req.user.username) {
@@ -102,10 +88,6 @@ router.put("/profile", authCheck, upload.single("avatar"), async (req, res) => {
       });
       
       if (existingUser) {
-        // If file was uploaded, delete it since we're not going to use it
-        if (req.file) {
-          fs.unlinkSync(path.join(process.cwd(), updateData.avatar));
-        }
         return res.status(400).json({ message: "Username is already taken" });
       }
     }
@@ -121,24 +103,11 @@ router.put("/profile", authCheck, upload.single("avatar"), async (req, res) => {
     );
 
     if (!updatedUser) {
-      // If file was uploaded, delete it since update failed
-      if (req.file) {
-        fs.unlinkSync(path.join(process.cwd(), updateData.avatar));
-      }
       return res.status(404).json({ message: "User not found" });
-    }
-
-    // Format avatar URL for response
-    if (updatedUser.avatar) {
-      updatedUser.avatar = `https://aurachef-backend.vercel.app/${updatedUser.avatar}`;
     }
 
     res.json(updatedUser);
   } catch (error) {
-    // If file was uploaded, delete it since an error occurred
-    if (req.file) {
-      fs.unlinkSync(path.join(process.cwd(), updateData.avatar));
-    }
     console.error("❌ Error updating user profile:", error);
     res.status(500).json({ message: "Internal server error" });
   }
