@@ -7,7 +7,7 @@ const recipeRoutes = require("./routes/recipe");
 const ratingRoutes = require("./routes/rating");
 const favouritesRoutes = require("./routes/favourites");
 const userRoutes = require("./routes/users"); 
-const calorietrackingRoutes = require("./routes/calorietracking");
+const calorietrackingRoutes = require("./routes/calorieTracking");
 const path = require("path");
 
 const app = express();
