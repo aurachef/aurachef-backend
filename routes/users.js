@@ -60,7 +60,7 @@ router.get("/profile", authCheck, async (req, res) => {
     
     // Ensure avatar URL is properly formatted
     if (user.avatar) {
-      user.avatar = `http://localhost:5001/${user.avatar.replace(/^\//, '')}`;
+      user.avatar = `https://aurachef-backend.vercel.app/${user.avatar.replace(/^\//, '')}`;
     }
     
     res.json(user);
@@ -86,7 +86,7 @@ router.put("/profile", authCheck, upload.single("avatar"), async (req, res) => {
       // Delete old avatar file if it exists
       const currentUser = await User.findById(req.user._id);
       if (currentUser.avatar) {
-        const oldAvatarPath = currentUser.avatar.replace('http://localhost:5001/', '');
+        const oldAvatarPath = currentUser.avatar.replace('https://aurachef-backend.vercel.app/', '');
         const fullPath = path.join(process.cwd(), oldAvatarPath);
         if (fs.existsSync(fullPath)) {
           fs.unlinkSync(fullPath);
@@ -130,7 +130,7 @@ router.put("/profile", authCheck, upload.single("avatar"), async (req, res) => {
 
     // Format avatar URL for response
     if (updatedUser.avatar) {
-      updatedUser.avatar = `http://localhost:5001/${updatedUser.avatar}`;
+      updatedUser.avatar = `https://aurachef-backend.vercel.app/${updatedUser.avatar}`;
     }
 
     res.json(updatedUser);
