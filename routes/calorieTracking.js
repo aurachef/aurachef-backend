@@ -104,12 +104,21 @@ router.delete("/food-log/:id", authCheck, async (req, res) => {
   }
 });
 
-// Reset all food logs
-router.delete("/food-log/reset", authCheck, async (req, res) => {
+
+// Reset all food logs and clear daily goals
+router.delete("/food-log-reset", authCheck, async (req, res) => {
   try {
-    // Delete all food logs for the user
-    await FoodLog.deleteMany({ userId: req.user._id });
-    res.json({ message: "Food logs reset successfully!" });
+    const userId = req.user.id; // Make sure you're using the correct property (id vs _id)
+    
+    // Delete all food logs for this user
+    await FoodLog.deleteMany({ userId });
+    
+    // Reset daily goals in user model
+    await User.findByIdAndUpdate(userId, {
+      $unset: { dailyCalorieGoal: "", dailyProteinGoal: "", dailyFatGoal: "", dailyCarbGoal: "" }
+    });
+    
+    res.json({ message: "Food logs and daily goals reset successfully!" });
   } catch (error) {
     console.error("❌ Error resetting food logs:", error);
     res.status(500).json({ message: "Internal server error" });

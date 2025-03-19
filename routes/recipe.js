@@ -405,4 +405,16 @@ router.post("/admin/pending/:id", adminAuthCheck, async (req, res) => {
   }
 });
 
+// Get all approved recipes for admin
+router.get("/admin/approved", adminAuthCheck, async (req, res) => {
+  try {
+    const recipes = await Recipe.find({ status: "approved" }).populate("userId");
+    res.status(200).json(recipes);
+  } catch (error) {
+    console.error("❌ Error fetching approved recipes:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
 module.exports = router;

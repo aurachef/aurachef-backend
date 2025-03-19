@@ -45,8 +45,33 @@ router.post("/signup", async (req, res) => {
     await newUser.save();
     console.log("✅ User registered:", newUser);
 
-    res.status(201).json({ message: "User registered successfully!" });
-  } catch (error) {
+     // ✅ Include isAdmin in JWT payload
+     const payload = {
+      userId: newUser._id,
+      username: newUser.username,
+      email: newUser.email,
+      isAdmin: newUser.isAdmin, 
+    };
+
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "2h" });
+
+    console.log("✅ Login successful:", { email, isAdmin: newUser.isAdmin });
+
+    res.status(200).json({
+      message: "User registered successfully!",
+      token,
+      user: {
+        _id: newUser._id,
+        name: newUser.name,
+        username: newUser.username,
+        email: newUser.email,
+        isAdmin: newUser.isAdmin, 
+      },
+    });
+  } 
+
+   //res.status(201).json({ message: "User registered successfully!" });
+  catch (error) {
     console.error("❌ Signup Error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
@@ -81,7 +106,7 @@ router.post("/login", async (req, res) => {
       isAdmin: user.isAdmin, 
     };
 
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "2h" });
 
     console.log("✅ Login successful:", { email, isAdmin: user.isAdmin });
 
